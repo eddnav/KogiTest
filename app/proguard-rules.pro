@@ -28,3 +28,9 @@
 -keepclasseswithmembernames class * {
     @butterknife.* <methods>;
 }
+
+#Retrofit
+-dontwarn retrofit2.**
+-keep class retrofit2.** { *; }
+-keepattributes Signature
+-keepattributes Exceptions
