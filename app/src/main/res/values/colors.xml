@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+
+    <color name="color_primary">#7eb436</color>
+    <color name="color_primary_dark">#628d2b</color>
+    <color name="color_accent">#FF4081</color>
+
+    <!-- Post Item -->
+    <color name="post_item_background">#FFFFFF</color>
+    <color name="post_item_caption_text">#FFFFFF</color>
+
 </resources>
