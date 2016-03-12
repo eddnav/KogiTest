@@ -10,11 +10,10 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.nav.kogi.test.ActivityModule;
 import com.nav.kogi.test.App;
@@ -162,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements GalleryView {
                     .crossFade()
                     .into(holder.image);
 
-            holder.imageClickableForeground.setOnClickListener(new View.OnClickListener() {
+            holder.foreground.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     presenter.selectPost(position);
@@ -176,13 +175,13 @@ public class MainActivity extends AppCompatActivity implements GalleryView {
         }
 
         public class PostItemViewHolder extends RecyclerView.ViewHolder {
-            public FrameLayout imageClickableForeground;
+            public LinearLayout foreground;
             public ImageView image;
             public TextView caption;
 
             public PostItemViewHolder(View v) {
                 super(v);
-                imageClickableForeground = ButterKnife.findById(v, R.id.imageClickableForeground);
+                foreground = (LinearLayout) v;
                 image = ButterKnife.findById(v, R.id.image);
                 caption = ButterKnife.findById(v, R.id.caption);
             }
