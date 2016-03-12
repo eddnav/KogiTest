@@ -27,16 +27,18 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import icepick.Icepick;
+import icepick.State;
 
 public class MainActivity extends AppCompatActivity implements GalleryView {
 
+    public static final String SAVED_LAYOUT_MANAGER = "saved_layout_manager";
     public static final int GRID_COLUMN_COUNT = 3;
 
     @Inject
     GalleryPresenter galleryPresenter;
 
     private PostAdapter postAdapter;
-    private int selectedPostIndex = 0;
 
     @Bind(R.id.viewer)
     ImageView mViewer;
@@ -45,11 +47,17 @@ public class MainActivity extends AppCompatActivity implements GalleryView {
     @Bind(R.id.refreshLayout)
     SwipeRefreshLayout mRefreshLayout;
 
+    @State
+    public int selectedPostIndex = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        Icepick.restoreInstanceState(this, savedInstanceState);
 
         DaggerActivityComponent.builder()
                 .appComponent(((App) getApplication()).getAppComponent())
@@ -76,13 +84,28 @@ public class MainActivity extends AppCompatActivity implements GalleryView {
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                galleryPresenter.fetch();
+                galleryPresenter.fetchPopular();
             }
         });
 
-        //TODO set empty views for viewer and grid.
+        //TODO set empty/loading views for viewer and grid.
+        if (savedInstanceState == null)
+            galleryPresenter.fetchPopular();
+        else {
+            if (galleryPresenter.loadCachedPopularPosts()) {
+                mGallery.getLayoutManager().onRestoreInstanceState(savedInstanceState.getParcelable(SAVED_LAYOUT_MANAGER));
+                galleryPresenter.selectPost(selectedPostIndex);
+            } else
+                galleryPresenter.fetchPopular();
+        }
 
-        galleryPresenter.fetch();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(SAVED_LAYOUT_MANAGER, mGallery.getLayoutManager().onSaveInstanceState());
+        Icepick.saveInstanceState(this, outState);
     }
 
     @Override
@@ -93,12 +116,20 @@ public class MainActivity extends AppCompatActivity implements GalleryView {
 
     public void refresh() {
         postAdapter.notifyDataSetChanged();
+        if (mRefreshLayout.isRefreshing())
+            mRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void setSelectedPost(int position) {
+        selectedPostIndex = position;
+        String url =
+                galleryPresenter.getPosts().get(position).getImages().get(Post.ImageResolution.STANDARD).getUrl();
         Glide.with(this)
-                .load(galleryPresenter.getPosts().get(selectedPostIndex).getImages().get(Post.ImageResolution.STANDARD).getUrl())
+                .load(url)
+                .placeholder(R.drawable.placeholder) // TODO create better place holders, one for the top viewer and one for the cells.
                 .crossFade()
                 .into(mViewer);
-        if(mRefreshLayout.isRefreshing())
-            mRefreshLayout.setRefreshing(false);
     }
 
     private class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostItemViewHolder> {
@@ -122,19 +153,19 @@ public class MainActivity extends AppCompatActivity implements GalleryView {
         }
 
         @Override
-        public void onBindViewHolder(PostItemViewHolder holder, int position) {
+        public void onBindViewHolder(PostItemViewHolder holder, final int position) {
             Post post = presenter.getPosts().get(position);
             holder.caption.setText(post.getCaption() == null ? "..." : post.getCaption().getText());
-            final DrawableRequestBuilder<String> drawableRequestBuilder = Glide.with(context)
+             Glide.with(context)
                     .load(post.getImages().get(Post.ImageResolution.STANDARD).getUrl())
                     .placeholder(R.drawable.placeholder) // TODO create better place holders, one for the top viewer and one for the cells.
-                    .crossFade();
+                    .crossFade()
+                    .into(holder.image);
 
-            drawableRequestBuilder.into(holder.image);
             holder.imageClickableForeground.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    drawableRequestBuilder.into(viewer);
+                    presenter.selectPost(position);
                 }
             });
         }

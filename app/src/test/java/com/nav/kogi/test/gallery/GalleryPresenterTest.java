@@ -47,7 +47,7 @@ public class GalleryPresenterTest {
     }
 
     @Test
-    public void fetchShouldPopulatePosts() throws Exception {
+    public void fetchPopularShouldPopulatePosts() throws Exception {
         Api api = mock(Api.class);
         PostsResponse postsResponse = mock(PostsResponse.class);
         GalleryView galleryView = mock(GalleryView.class);
@@ -59,7 +59,7 @@ public class GalleryPresenterTest {
         when(api.getPopularPosts(anyString())).thenReturn(Observable.just(postsResponse));
         GalleryPresenter presenter = new GalleryPresenter(api);
         presenter.takeView(galleryView);
-        presenter.fetch();
+        presenter.fetchPopular();
 
         assertThat("Presenter's post count", presenter.getPosts().size(), equalTo(2));
         verify(galleryView).refresh();
@@ -74,7 +74,7 @@ public class GalleryPresenterTest {
 
         when(api.getPopularPosts(anyString())).thenReturn(Observable.just(postsResponse));
         GalleryPresenter presenter = new GalleryPresenter(api);
-        presenter.fetch();
+        presenter.fetchPopular();
 
         assertThat(presenter.getPosts(), is(notNullValue()));
     }

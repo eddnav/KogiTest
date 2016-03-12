@@ -39,11 +39,11 @@ public class AppModule {
     @Singleton
     @Provides
     public Gson provideGson() {
-       Gson gson = new GsonBuilder()
-               .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-               .create();
 
-        return gson;
+        return new GsonBuilder()
+                .enableComplexMapKeySerialization()
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .create();
     }
 
     @Singleton

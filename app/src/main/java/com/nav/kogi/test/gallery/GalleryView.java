@@ -7,4 +7,5 @@ public interface GalleryView {
 
     void refresh();
 
+    void setSelectedPost(int position);
 }

@@ -3,6 +3,7 @@ package com.nav.kogi.test.gallery;
 import com.nav.kogi.test.shared.annotation.Activities;
 import com.nav.kogi.test.shared.api.Api;
 import com.nav.kogi.test.shared.api.PostsResponse;
+import com.nav.kogi.test.shared.cache.Cache;
 import com.nav.kogi.test.shared.models.Post;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class GalleryPresenter {
         this.galleryView = galleryView;
     }
 
-    public void fetch() {
+    public void fetchPopular() {
         subscriptions.add(api.getPopularPosts(CLIENT_ID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -49,20 +50,36 @@ public class GalleryPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        // TODO use cached posts if available
-                        e.printStackTrace();
+                        loadCachedPopularPosts();
+                        // notify gallery view of network error.
                     }
 
                     @Override
                     public void onNext(PostsResponse postsResponse) {
-                        // TODO cache post response
-                        // TODO hide network error snackbar.
-                        posts.clear();
-                        posts.addAll(postsResponse.getPosts());
-                        if(galleryView != null)
+                        Cache.putPopularPostsResponse(postsResponse);
+                        GalleryPresenter.this.posts.clear();
+                        GalleryPresenter.this.posts.addAll(postsResponse.getPosts());
+                        if (galleryView != null) {
                             galleryView.refresh();
+                            galleryView.setSelectedPost(0);
+                        }
                     }
                 }));
+    }
+
+    /**
+     * Returns true if loading from the cache was successful (posts returned non null and at least 1).
+     *
+     * @return true if successful, false otherwise.
+     */
+    public boolean loadCachedPopularPosts() { // TODO test this.
+        PostsResponse cachedPosts = Cache.getPopularPostsResponse();
+        if (cachedPosts != null && cachedPosts.getPosts().size() > 0) {
+            posts.addAll(cachedPosts.getPosts());
+            galleryView.refresh();
+            return true;
+        } else
+            return false;
     }
 
     public List<Post> getPosts() {
@@ -74,4 +91,8 @@ public class GalleryPresenter {
         this.subscriptions.unsubscribe();
     }
 
+
+    public void selectPost(int position) {
+        galleryView.setSelectedPost(position);
+    }
 }
