@@ -22,17 +22,18 @@ import rx.subscriptions.CompositeSubscription;
 @Activities
 public class GalleryPresenter {
 
-    public final String CLIENT_ID = "05132c49e9f148ec9b8282af33f88ac7";
 
     private Api api;
+    private Cache cache;
 
     private GalleryView galleryView;
     private CompositeSubscription subscriptions = new CompositeSubscription();
     private List<Post> posts = new ArrayList<>();
 
     @Inject
-    public GalleryPresenter(Api api) {
+    public GalleryPresenter(Api api, Cache cache) {
         this.api = api;
+        this.cache = cache;
     }
 
     public void takeView(GalleryView galleryView) {
@@ -40,7 +41,7 @@ public class GalleryPresenter {
     }
 
     public void fetchPopular() {
-        subscriptions.add(api.getPopularPosts(CLIENT_ID)
+        subscriptions.add(api.getPopularPosts(Api.DEFAULT_CLIENT_ID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<PostsResponse>() {
@@ -56,7 +57,7 @@ public class GalleryPresenter {
 
                     @Override
                     public void onNext(PostsResponse postsResponse) {
-                        Cache.putPopularPostsResponse(postsResponse);
+                        cache.putPopularPostsResponse(postsResponse);
                         GalleryPresenter.this.posts.clear();
                         GalleryPresenter.this.posts.addAll(postsResponse.getPosts());
                         if (galleryView != null) {
@@ -72,8 +73,8 @@ public class GalleryPresenter {
      *
      * @return true if successful, false otherwise.
      */
-    public boolean loadCachedPopularPosts() { // TODO test this.
-        PostsResponse cachedPosts = Cache.getPopularPostsResponse();
+    public boolean loadCachedPopularPosts() {
+        PostsResponse cachedPosts = cache.getPopularPostsResponse();
         if (cachedPosts != null && cachedPosts.getPosts().size() > 0) {
             posts.addAll(cachedPosts.getPosts());
             galleryView.refresh();

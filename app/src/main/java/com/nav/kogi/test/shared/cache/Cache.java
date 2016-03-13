@@ -2,9 +2,6 @@ package com.nav.kogi.test.shared.cache;
 
 import com.anupcowkur.reservoir.Reservoir;
 import com.nav.kogi.test.shared.api.PostsResponse;
-import com.nav.kogi.test.shared.models.Post;
-
-import java.util.List;
 
 import timber.log.Timber;
 
@@ -17,7 +14,7 @@ public class Cache {
 
     public static String POPULAR_POSTS_FEED = "popular_posts_feed";
 
-    public static void putPopularPostsResponse(PostsResponse posts) {
+    public void putPopularPostsResponse(PostsResponse posts) {
         try {
             Reservoir.put(POPULAR_POSTS_FEED, posts);
         } catch (Exception e) {
@@ -25,7 +22,7 @@ public class Cache {
         }
     }
 
-    public static PostsResponse getPopularPostsResponse() {
+    public PostsResponse getPopularPostsResponse() {
         try {
             return Reservoir.get(POPULAR_POSTS_FEED, PostsResponse.class);
         } catch (Exception e) {
