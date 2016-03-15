@@ -7,7 +7,7 @@ import com.nav.kogi.test.shared.models.Post;
 import timber.log.Timber;
 
 /**
- * Simple singleton wrapper over Reservoir, also keeps memory references of cached feeds.
+ * Simple singleton wrapper over Reservoir, also keeps memory references of disk cached feeds.
  *
  * @author Eduardo Naveda
  */

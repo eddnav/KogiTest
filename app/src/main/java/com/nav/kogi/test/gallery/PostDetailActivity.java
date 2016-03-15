@@ -13,6 +13,7 @@ import com.nav.kogi.test.R;
 import com.nav.kogi.test.shared.AppError;
 import com.nav.kogi.test.shared.models.Caption;
 import com.nav.kogi.test.shared.models.Post;
+import com.viewpagerindicator.CirclePageIndicator;
 
 import javax.inject.Inject;
 
@@ -28,6 +29,8 @@ public class PostDetailActivity extends BaseActivity implements GalleryView {
 
     @Bind(R.id.viewerPager)
     ViewPager mViewerPager;
+    @Bind(R.id.indicator)
+    CirclePageIndicator mIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,8 @@ public class PostDetailActivity extends BaseActivity implements GalleryView {
             public void onPageScrollStateChanged(int state) {
             }
         });
+        mIndicator.setViewPager(mViewerPager);
+
         galleryPresenter.loadCachedPopularPosts();
         galleryPresenter.selectPost(index);
         mViewerPager.setCurrentItem(index, false);
@@ -123,7 +128,7 @@ public class PostDetailActivity extends BaseActivity implements GalleryView {
     }
 
     public void shareImageLink(String url) {
-        Intent share = new Intent(android.content.Intent.ACTION_SEND);
+        Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("text/plain");
         share.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.check_out_this_image));
         share.putExtra(Intent.EXTRA_TEXT, getString(R.string.check_out_this_image_url, url));

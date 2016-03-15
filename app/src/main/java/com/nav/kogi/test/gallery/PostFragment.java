@@ -50,8 +50,6 @@ public class PostFragment extends BaseFragment implements PostView {
     LinearLayout mInfo;
     @Bind(R.id.image)
     ImageView mImage;
-    @Bind(R.id.indicator)
-    CirclePageIndicator mIndicator;
 
     boolean showInfo;
     private Navigation navigation;
