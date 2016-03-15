@@ -2,6 +2,7 @@ package com.nav.kogi.test.gallery;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -9,7 +10,7 @@ import android.view.MenuItem;
 
 import com.nav.kogi.test.BaseActivity;
 import com.nav.kogi.test.R;
-import com.nav.kogi.test.shared.api.ApiError;
+import com.nav.kogi.test.shared.AppError;
 import com.nav.kogi.test.shared.models.Caption;
 import com.nav.kogi.test.shared.models.Post;
 
@@ -99,8 +100,9 @@ public class PostDetailActivity extends BaseActivity implements GalleryView {
     }
 
     @Override
-    public void showError(ApiError generic) {
-        // TODO
+    public void showError(AppError generic) {
+        Snackbar.make(findViewById(android.R.id.content),
+                R.string.error_generic, Snackbar.LENGTH_LONG).show();
     }
 
     @Override

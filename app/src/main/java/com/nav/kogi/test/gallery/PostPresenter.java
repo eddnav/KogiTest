@@ -1,5 +1,6 @@
 package com.nav.kogi.test.gallery;
 
+import com.nav.kogi.test.shared.AppError;
 import com.nav.kogi.test.shared.cache.Cache;
 import com.nav.kogi.test.shared.models.Post;
 import com.nav.kogi.test.shared.presenter.Presenter;
@@ -22,7 +23,10 @@ public class PostPresenter implements Presenter<PostView> {
     public void load(int index) {
         this.index = index;
         post = cache.getPopularPostByIndex(index);
-        postView.show(post);
+        if(post != null)
+            postView.show(post);
+        else
+            postView.showError(AppError.GENERIC);
     }
 
     @Override
@@ -47,6 +51,11 @@ public class PostPresenter implements Presenter<PostView> {
                 throw new IllegalArgumentException(navigation + " is not a valid navigation tag");
         }
     }
+
+    public Post getPost() {
+        return post;
+    }
+
     public int getIndex() {
         return index;
     }

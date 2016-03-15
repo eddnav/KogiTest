@@ -1,5 +1,6 @@
 package com.nav.kogi.test.gallery;
 
+import com.nav.kogi.test.shared.AppError;
 import com.nav.kogi.test.shared.api.Api;
 import com.nav.kogi.test.shared.api.PostsResponse;
 import com.nav.kogi.test.shared.cache.Cache;
@@ -9,6 +10,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import rx.Observable;
@@ -23,6 +25,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -70,6 +73,35 @@ public class GalleryPresenterTest {
 
         assertThat("Presenter's post count", presenter.getPosts().size(), greaterThan(0));
         verify(galleryView).refresh();
+    }
+
+    @Test
+    public void fetchPopularShouldPresentErrorWhenUnsuccessful() throws Exception {
+        GalleryView galleryView = mock(GalleryView.class);
+
+        when(api.getPopularPosts(anyString())).thenReturn(Observable.<PostsResponse>error(new IOException()));
+        presenter.takeView(galleryView);
+        presenter.fetchPopular();
+
+        verify(galleryView).showError(AppError.CONNECTION);
+
+        when(api.getPopularPosts(anyString())).thenReturn(Observable.<PostsResponse>error(new Exception()));
+        presenter.takeView(galleryView);
+        presenter.fetchPopular();
+
+        verify(galleryView).showError(AppError.GENERIC);
+    }
+
+    @Test
+    public void fetchPopularShouldLoadCacheWhenUnsuccessful() throws Exception {
+        GalleryView galleryView = mock(GalleryView.class);
+        presenter = spy(presenter);
+
+        when(api.getPopularPosts(anyString())).thenReturn(Observable.<PostsResponse>error(new Exception()));
+        presenter.takeView(galleryView);
+        presenter.fetchPopular();
+
+        verify(presenter).loadCachedPopularPosts();
     }
 
     @Test

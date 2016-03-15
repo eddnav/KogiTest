@@ -1,16 +1,14 @@
 package com.nav.kogi.test.gallery;
 
-import com.nav.kogi.test.shared.api.ApiError;
+import com.nav.kogi.test.shared.presenter.PresenterView;
 
 /**
  * @author Eduardo Naveda
  */
-public interface GalleryView {
+public interface GalleryView extends PresenterView {
 
     void refresh();
 
     void setSelectedPost(int position);
-
-    void showError(ApiError error);
 
 }

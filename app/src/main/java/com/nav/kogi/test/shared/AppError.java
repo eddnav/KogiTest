@@ -1,8 +1,8 @@
-package com.nav.kogi.test.shared.api;
+package com.nav.kogi.test.shared;
 
 /**
  * @author Eduardo Naveda
  */
-public enum ApiError {
+public enum AppError {
     GENERIC, CONNECTION
 }

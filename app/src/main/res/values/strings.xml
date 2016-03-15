@@ -1,5 +1,6 @@
 <resources>
 
+    <!-- General -->
     <string name="app_name">Kogi Test</string>
 
     <!-- Menu Action -->
@@ -19,6 +20,5 @@
     <string name="error_connection">There seems to be a problem with the Internet connection</string>
     <string name="error_generic">An unknown error has occurred</string>
     <string name="title_activity_user_profile">User Profile</string>
-
 
 </resources>

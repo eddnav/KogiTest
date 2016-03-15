@@ -2,6 +2,7 @@ package com.nav.kogi.test.gallery;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.nav.kogi.test.BaseFragment;
 import com.nav.kogi.test.R;
+import com.nav.kogi.test.shared.AppError;
 import com.nav.kogi.test.shared.annotation.ForFragment;
 import com.nav.kogi.test.shared.models.Post;
 import com.viewpagerindicator.CirclePageIndicator;
@@ -165,6 +167,12 @@ public class PostFragment extends BaseFragment implements PostView {
                 builder.append(", ");
         }
         return builder.toString();
+    }
+
+    @Override
+    public void showError(AppError error) {
+        Snackbar.make(getActivity().findViewById(android.R.id.content),
+                R.string.error_generic, Snackbar.LENGTH_LONG).show();
     }
 
 }

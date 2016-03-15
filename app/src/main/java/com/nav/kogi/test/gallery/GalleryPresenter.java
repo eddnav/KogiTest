@@ -2,7 +2,7 @@ package com.nav.kogi.test.gallery;
 
 import com.nav.kogi.test.shared.annotation.Activities;
 import com.nav.kogi.test.shared.api.Api;
-import com.nav.kogi.test.shared.api.ApiError;
+import com.nav.kogi.test.shared.AppError;
 import com.nav.kogi.test.shared.api.PostsResponse;
 import com.nav.kogi.test.shared.cache.Cache;
 import com.nav.kogi.test.shared.models.Post;
@@ -63,9 +63,9 @@ public class GalleryPresenter implements Presenter<GalleryView> {
                     public void onError(Throwable e) {
                         loadCachedPopularPosts();
                         if (e instanceof IOException)
-                            galleryView.showError(ApiError.CONNECTION);
+                            galleryView.showError(AppError.CONNECTION);
                         else
-                            galleryView.showError(ApiError.GENERIC);
+                            galleryView.showError(AppError.GENERIC);
                     }
 
                     @Override

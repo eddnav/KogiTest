@@ -21,7 +21,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.nav.kogi.test.BaseActivity;
 import com.nav.kogi.test.R;
-import com.nav.kogi.test.shared.api.ApiError;
+import com.nav.kogi.test.shared.AppError;
 import com.nav.kogi.test.shared.models.Post;
 import com.nav.kogi.test.shared.util.AndroidUtil;
 
@@ -163,7 +163,7 @@ public class MainActivity extends BaseActivity implements GalleryView {
     }
 
     @Override
-    public void showError(ApiError error) {
+    public void showError(AppError error) {
         int errorRes = R.string.error_generic;
         switch (error) {
             case CONNECTION:
