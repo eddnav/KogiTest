@@ -5,6 +5,9 @@
     <color name="color_primary_dark">#628d2b</color>
     <color name="color_accent">#FF4081</color>
 
+    <!-- Viewer -->
+    <color name="viewer_background">#000000</color>
+
     <!-- Post Item -->
     <color name="post_item_background">#FFFFFF</color>
     <color name="post_item_caption_text">#FFFFFF</color>

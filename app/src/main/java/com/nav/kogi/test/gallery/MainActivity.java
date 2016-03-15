@@ -2,23 +2,22 @@ package com.nav.kogi.test.gallery;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.nav.kogi.test.ActivityModule;
-import com.nav.kogi.test.App;
-import com.nav.kogi.test.DaggerActivityComponent;
+import com.nav.kogi.test.BaseActivity;
 import com.nav.kogi.test.R;
+import com.nav.kogi.test.shared.cache.Cache;
 import com.nav.kogi.test.shared.models.Post;
 import com.nav.kogi.test.shared.util.AndroidUtil;
 
@@ -26,21 +25,19 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import icepick.Icepick;
 import icepick.State;
 
-public class MainActivity extends AppCompatActivity implements GalleryView {
+public class MainActivity extends BaseActivity implements GalleryView {
 
+    public static final String SELECTED_INDEX = "selected_index";
     public static final String SAVED_LAYOUT_MANAGER = "saved_layout_manager";
     public static final int GRID_COLUMN_COUNT = 3;
 
     @Inject
     GalleryPresenter galleryPresenter;
 
-    private PostAdapter postAdapter;
-
-    @Bind(R.id.viewer)
-    ImageView mViewer;
+    @Bind(R.id.viewerPager)
+    ViewPager mViewerPager;
     @Bind(R.id.gallery)
     RecyclerView mGallery;
     @Bind(R.id.refreshLayout)
@@ -56,13 +53,7 @@ public class MainActivity extends AppCompatActivity implements GalleryView {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        Icepick.restoreInstanceState(this, savedInstanceState);
-
-        DaggerActivityComponent.builder()
-                .appComponent(((App) getApplication()).getAppComponent())
-                .activityModule(new ActivityModule(this))
-                .build()
-                .inject(this);
+        getActivityComponent().inject(this);
 
         galleryPresenter.takeView(this);
 
@@ -70,8 +61,7 @@ public class MainActivity extends AppCompatActivity implements GalleryView {
         mGallery.setHasFixedSize(true);
         mGallery.setLayoutManager(layoutManager);
 
-        postAdapter = new PostAdapter(this, galleryPresenter, mViewer);
-        mGallery.setAdapter(postAdapter);
+        mGallery.setAdapter(new PostAdapter(this, galleryPresenter));
         mGallery.addItemDecoration(new GridCellSpacingDecorator((int)
                 TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                         getResources().getDimension(R.dimen.post_item_space),
@@ -86,25 +76,39 @@ public class MainActivity extends AppCompatActivity implements GalleryView {
                 galleryPresenter.fetchPopular();
             }
         });
+        mViewerPager.setAdapter(new GalleryViewPagerAdapter(getSupportFragmentManager(), galleryPresenter, false, Cache.POPULAR_POSTS_FEED));
+        mViewerPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                ((PostAdapter) mGallery.getAdapter()).select(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
 
         //TODO set empty/loading views for viewer and grid.
         if (savedInstanceState == null)
             galleryPresenter.fetchPopular();
         else {
             if (galleryPresenter.loadCachedPopularPosts()) {
+                galleryPresenter.selectPost(savedInstanceState.getInt(SELECTED_INDEX));
                 mGallery.getLayoutManager().onRestoreInstanceState(savedInstanceState.getParcelable(SAVED_LAYOUT_MANAGER));
-                galleryPresenter.selectPost(selectedPostIndex);
             } else
                 galleryPresenter.fetchPopular();
         }
-
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putInt(SELECTED_INDEX, galleryPresenter.getSelectedIndex());
         outState.putParcelable(SAVED_LAYOUT_MANAGER, mGallery.getLayoutManager().onSaveInstanceState());
-        Icepick.saveInstanceState(this, outState);
     }
 
     @Override
@@ -114,7 +118,8 @@ public class MainActivity extends AppCompatActivity implements GalleryView {
     }
 
     public void refresh() {
-        postAdapter.notifyDataSetChanged();
+        mGallery.getAdapter().notifyDataSetChanged();
+        mViewerPager.getAdapter().notifyDataSetChanged();
         if (mRefreshLayout.isRefreshing())
             mRefreshLayout.setRefreshing(false);
     }
@@ -122,25 +127,18 @@ public class MainActivity extends AppCompatActivity implements GalleryView {
     @Override
     public void setSelectedPost(int position) {
         selectedPostIndex = position;
-        String url =
-                galleryPresenter.getPosts().get(position).getImages().get(Post.ImageResolution.STANDARD).getUrl();
-        Glide.with(this)
-                .load(url)
-                .placeholder(R.drawable.placeholder) // TODO create better place holders, one for the top viewer and one for the cells.
-                .crossFade()
-                .into(mViewer);
+        mViewerPager.setCurrentItem(position);
+        mGallery.scrollToPosition(position);
     }
 
     private class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostItemViewHolder> {
 
         private Context context;
         private GalleryPresenter presenter;
-        private ImageView viewer;
 
-        public PostAdapter(Context context, GalleryPresenter presenter, ImageView viewer) {
+        public PostAdapter(Context context, GalleryPresenter presenter) {
             this.context = context;
             this.presenter = presenter;
-            this.viewer = viewer;
         }
 
         @Override
@@ -152,21 +150,24 @@ public class MainActivity extends AppCompatActivity implements GalleryView {
         }
 
         @Override
-        public void onBindViewHolder(PostItemViewHolder holder, final int position) {
+        public void onBindViewHolder(final PostItemViewHolder holder, final int position) {
             Post post = presenter.getPosts().get(position);
             holder.caption.setText(post.getCaption() == null ? "..." : post.getCaption().getText());
-             Glide.with(context)
+            Glide.with(context)
                     .load(post.getImages().get(Post.ImageResolution.STANDARD).getUrl())
-                    .placeholder(R.drawable.placeholder) // TODO create better place holders, one for the top viewer and one for the cells.
+                    .placeholder(R.drawable.placeholder)
                     .crossFade()
                     .into(holder.image);
+            holder.caption.setSelected(position == presenter.getSelectedIndex());
+        }
 
-            holder.foreground.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    presenter.selectPost(position);
-                }
-            });
+        public void select(int position) {
+            int selectedIndex = presenter.getSelectedIndex();
+            if(position != selectedIndex) {
+                notifyItemChanged(selectedIndex);
+                presenter.selectPost(position);
+                notifyItemChanged(presenter.getSelectedIndex());
+            }
         }
 
         @Override
@@ -174,16 +175,20 @@ public class MainActivity extends AppCompatActivity implements GalleryView {
             return presenter.getPosts().size();
         }
 
-        public class PostItemViewHolder extends RecyclerView.ViewHolder {
-            public LinearLayout foreground;
+        public class PostItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             public ImageView image;
             public TextView caption;
 
             public PostItemViewHolder(View v) {
                 super(v);
-                foreground = (LinearLayout) v;
+                v.setOnClickListener(this);
                 image = ButterKnife.findById(v, R.id.image);
                 caption = ButterKnife.findById(v, R.id.caption);
+            }
+
+            @Override
+            public void onClick(View view) {
+                select(getLayoutPosition());
             }
         }
     }

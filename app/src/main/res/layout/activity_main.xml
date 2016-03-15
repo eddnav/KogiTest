@@ -7,14 +7,11 @@
     android:orientation="vertical"
     tools:context=".gallery.MainActivity">
 
-    <ImageView
-        android:id="@+id/viewer"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewerPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="4"
-        android:background="#000"
-        android:scaleType="fitCenter"
-        tools:ignore="ContentDescription"/>
+        android:layout_weight="4"/>
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/refreshLayout"

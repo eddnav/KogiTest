@@ -1,3 +1,11 @@
 <resources>
+
     <string name="app_name">Kogi Test</string>
+
+    <!-- Info -->
+    <string name="info_publish_date">Publish Date: %s</string>
+    <string name="info_author">Author: %s</string>
+    <string name="info_tag">Tag: %s</string>
+
+
 </resources>

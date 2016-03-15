@@ -3,8 +3,10 @@ package com.nav.kogi.test;
 import android.content.Context;
 
 import com.nav.kogi.test.gallery.MainActivity;
+import com.nav.kogi.test.gallery.PostPresenter;
 import com.nav.kogi.test.shared.annotation.Activities;
 import com.nav.kogi.test.shared.annotation.ForActivity;
+import com.nav.kogi.test.shared.cache.Cache;
 
 import dagger.Component;
 
@@ -21,5 +23,10 @@ public interface ActivityComponent {
 
     @ForActivity
     Context getContext();
+
+    @ForActivity
+    PostPresenter getPostPresenter();
+
+    Cache getCache();
 
 }

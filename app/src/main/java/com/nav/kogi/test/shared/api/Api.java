@@ -1,8 +1,5 @@
 package com.nav.kogi.test.shared.api;
 
-
-import javax.inject.Singleton;
-
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 import rx.Observable;
