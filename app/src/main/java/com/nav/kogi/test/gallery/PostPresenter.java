@@ -41,7 +41,7 @@ public class PostPresenter implements Presenter<PostView> {
                 postView.toDetail(post, index);
                 break;
             case USER_PROFILE:
-                postView.toUserProfile(post.getUser().getId());
+                postView.toUserProfile(post.getUser().getUsername());
                 break;
             default:
                 throw new IllegalArgumentException(navigation + " is not a valid navigation tag");

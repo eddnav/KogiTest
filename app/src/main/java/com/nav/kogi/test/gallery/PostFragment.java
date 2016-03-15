@@ -136,8 +136,10 @@ public class PostFragment extends BaseFragment implements PostView {
     }
 
     @Override
-    public void toUserProfile(String id) {
-
+    public void toUserProfile(String username) {
+        Intent intent = new Intent(getActivity(), UserProfileActivity.class);
+        intent.putExtra(UserProfileActivity.USERNAME, username);
+        getActivity().startActivity(intent);
     }
 
     public void setInfo(Post post) {

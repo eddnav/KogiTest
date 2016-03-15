@@ -10,6 +10,7 @@ import rx.Observable;
 public interface Api {
 
     String BASE_URL = "https://api.instagram.com/v1/";
+    String USER_PROFILE_URL_BASE = "https://www.instagram.com/";
     String DEFAULT_CLIENT_ID = "05132c49e9f148ec9b8282af33f88ac7";
 
     @GET("media/popular")

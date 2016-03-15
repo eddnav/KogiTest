@@ -22,6 +22,10 @@
             android:name=".gallery.PostDetailActivity"
             android:label="">
         </activity>
+        <activity
+            android:name=".gallery.UserProfileActivity"
+            android:label="@string/title_activity_user_profile">
+        </activity>
     </application>
 
 </manifest>

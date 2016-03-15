@@ -11,7 +11,7 @@ public interface PostView {
 
     void toDetail(Post post, int index);
 
-    void toUserProfile(String id);
+    void toUserProfile(String username);
 
     enum Navigation {
         DETAIL, USER_PROFILE
