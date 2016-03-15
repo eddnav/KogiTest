@@ -13,7 +13,7 @@
         android:layout_weight="4"
         android:background="@color/viewer_background">
 
-        <include layout="@layout/main_viewer_content" />
+        <include layout="@layout/viewer_content" />
 
     </FrameLayout>
 

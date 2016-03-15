@@ -40,7 +40,7 @@ public class SchedulerOverrider {
                 });
                 overridden = true;
             } catch (IllegalStateException e) {
-                throw new IllegalStateException("Schedulers class already initialized: always override schedulers with overrideWith()");
+                throw new IllegalStateException("Schedulers class already initialized: always override schedulers with ScheduleOverrider methods");
             }
         }
     }

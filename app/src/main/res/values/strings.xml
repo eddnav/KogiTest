@@ -5,10 +5,11 @@
     <!-- Menu Action -->
     <string name="action_refresh">Refresh</string>
 
-    <!-- Info -->
+    <!-- Post Detail -->
     <string name="info_publish_date">Publish Date: %s</string>
     <string name="info_author">Author: %s</string>
     <string name="info_tag">Tag: %s</string>
+    <string name="title_activity_post_detail">PostDetail</string>
 
 
 </resources>

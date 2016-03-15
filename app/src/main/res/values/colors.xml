@@ -12,4 +12,7 @@
     <color name="post_item_background">#FFFFFF</color>
     <color name="post_item_caption_text">#FFFFFF</color>
 
+    <!-- Post Detail -->
+    <color name="post_detail_info_text">#FFFFFF</color>
+
 </resources>

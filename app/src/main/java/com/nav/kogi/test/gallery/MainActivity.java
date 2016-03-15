@@ -1,6 +1,7 @@
 package com.nav.kogi.test.gallery;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -19,7 +20,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.nav.kogi.test.BaseActivity;
 import com.nav.kogi.test.R;
-import com.nav.kogi.test.shared.cache.Cache;
 import com.nav.kogi.test.shared.models.Post;
 import com.nav.kogi.test.shared.util.AndroidUtil;
 
@@ -27,7 +27,6 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import icepick.State;
 
 public class MainActivity extends BaseActivity implements GalleryView {
 
@@ -44,9 +43,6 @@ public class MainActivity extends BaseActivity implements GalleryView {
     RecyclerView mGallery;
     @Bind(R.id.refreshLayout)
     SwipeRefreshLayout mRefreshLayout;
-
-    @State
-    public int selectedPostIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +74,8 @@ public class MainActivity extends BaseActivity implements GalleryView {
                 galleryPresenter.fetchPopular();
             }
         });
-        mViewerPager.setAdapter(new GalleryViewPagerAdapter(getSupportFragmentManager(), galleryPresenter, false, Cache.POPULAR_POSTS_FEED));
+        mViewerPager.setAdapter(new GalleryViewPagerAdapter(getSupportFragmentManager(),
+                galleryPresenter, false, PostView.Navigation.DETAIL));
         mViewerPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -86,7 +83,7 @@ public class MainActivity extends BaseActivity implements GalleryView {
 
             @Override
             public void onPageSelected(int position) {
-                ((PostAdapter) mGallery.getAdapter()).select(position);
+                selectFromGallery(position);
             }
 
             @Override
@@ -94,7 +91,6 @@ public class MainActivity extends BaseActivity implements GalleryView {
             }
         });
 
-        //TODO set empty/loading views for viewer and grid.
         if (savedInstanceState == null)
             galleryPresenter.fetchPopular();
         else {
@@ -104,6 +100,10 @@ public class MainActivity extends BaseActivity implements GalleryView {
             } else
                 galleryPresenter.fetchPopular();
         }
+    }
+
+    private void selectFromGallery(int position) {
+        ((PostAdapter) mGallery.getAdapter()).select(position);
     }
 
     @Override
@@ -136,6 +136,17 @@ public class MainActivity extends BaseActivity implements GalleryView {
         galleryPresenter.dropView();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PostFragment.TO_DETAIL_GALLERY_RESULT_CODE) {
+            if (resultCode == RESULT_OK) {
+                selectFromGallery(data.getIntExtra(PostDetailActivity.SELECTED_INDEX, 0));
+            }
+        }
+    }
+
     public void refresh() {
         mGallery.getAdapter().notifyDataSetChanged();
         mViewerPager.getAdapter().notifyDataSetChanged();
@@ -145,8 +156,7 @@ public class MainActivity extends BaseActivity implements GalleryView {
 
     @Override
     public void setSelectedPost(int position) {
-        selectedPostIndex = position;
-        mViewerPager.setCurrentItem(position);
+        mViewerPager.setCurrentItem(position, false);
         mGallery.scrollToPosition(position);
     }
 

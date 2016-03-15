@@ -1,12 +1,11 @@
 package com.nav.kogi.test.shared.api;
 
-import com.google.gson.annotations.SerializedName;
-
 /**
+ * Meta tags returned in the API responses.
+ *
  * @author Eduardo Naveda
  */
 
 public enum MetaTag {
-
     CODE
 }

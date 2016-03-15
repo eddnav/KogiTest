@@ -7,7 +7,7 @@ import com.nav.kogi.test.shared.models.Post;
 import timber.log.Timber;
 
 /**
- * Simple singleton wrapper over Reservoir, keeps memory references of cached feeds.
+ * Simple singleton wrapper over Reservoir, also keeps memory references of cached feeds.
  *
  * @author Eduardo Naveda
  */
@@ -37,17 +37,12 @@ public class Cache {
         }
     }
 
-    public Post getPostInFeedByIndex(String feed, int index) {
-        switch (feed) {
-            case POPULAR_POSTS_FEED:
-                PostsResponse postsResponse = getPopularPostsResponse();
-                if (postsResponse != null)
-                    return postsResponse.getPosts().get(index);
-                else
-                    return null;
-            default:
-                throw new IllegalArgumentException(feed + " is not a valid feed tag");
-        }
+    public Post getPopularPostByIndex(int index) {
+        PostsResponse postsResponse = getPopularPostsResponse();
+        if (postsResponse != null)
+            return postsResponse.getPosts().get(index);
+        else
+            return null;
     }
 
 }

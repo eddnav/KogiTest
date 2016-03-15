@@ -19,9 +19,9 @@ public class PostPresenter implements Presenter<PostView> {
         this.cache = cache;
     }
 
-    public void load(String feed, int index) {
+    public void load(int index) {
         this.index = index;
-        post = cache.getPostInFeedByIndex(feed, index);
+        post = cache.getPopularPostByIndex(index);
         postView.show(post);
     }
 
@@ -46,6 +46,9 @@ public class PostPresenter implements Presenter<PostView> {
             default:
                 throw new IllegalArgumentException(navigation + " is not a valid navigation tag");
         }
+    }
+    public int getIndex() {
+        return index;
     }
 
 }

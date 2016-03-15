@@ -6,6 +6,8 @@ import com.nav.kogi.test.shared.models.Post;
 import java.util.List;
 
 /**
+ * Response wrapping a list of posts.
+ *
  * @author Eduardo Naveda
  */
 public class PostsResponse extends Response {

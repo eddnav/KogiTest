@@ -11,18 +11,18 @@ public class GalleryViewPagerAdapter extends FragmentStatePagerAdapter {
 
     private GalleryPresenter galleryPresenter;
     private boolean showInfo;
-    private String feed;
+    private PostView.Navigation navigation;
 
-    public GalleryViewPagerAdapter(FragmentManager fm, GalleryPresenter galleryPresenter, boolean showInfo, String feed) {
+    public GalleryViewPagerAdapter(FragmentManager fm, GalleryPresenter galleryPresenter, boolean showInfo, PostView.Navigation navigation) {
         super(fm);
         this.galleryPresenter = galleryPresenter;
         this.showInfo = showInfo;
-        this.feed = feed;
+        this.navigation = navigation;
     }
 
     @Override
     public Fragment getItem(int position) {
-        return PostFragment.newInstance(showInfo, feed, position);
+        return PostFragment.newInstance(showInfo, position, navigation);
     }
 
     @Override

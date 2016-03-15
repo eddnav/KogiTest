@@ -1,5 +1,6 @@
 package com.nav.kogi.test.gallery;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,9 +28,11 @@ import butterknife.ButterKnife;
 
 public class PostFragment extends BaseFragment implements PostView {
 
-    private static final String SHOW_INFO = "show_info";
-    private static final String FEED_TAG = "feed_tag";
-    private static final String INDEX = "index";
+    public static final int TO_DETAIL_GALLERY_RESULT_CODE = 1;
+
+    public static final String SHOW_INFO = "show_info";
+    public static final String INDEX = "index";
+    public static final String NAVIGATION = "navigation";
 
     @Inject
     @ForFragment
@@ -49,17 +52,18 @@ public class PostFragment extends BaseFragment implements PostView {
     CirclePageIndicator mIndicator;
 
     boolean showInfo;
+    private Navigation navigation;
 
     public PostFragment() {
         // Required empty public constructor
     }
 
-    public static PostFragment newInstance(boolean showInfo, String feed, int index) {
+    public static PostFragment newInstance(boolean showInfo, int index, Navigation navigation) {
         PostFragment fragment = new PostFragment();
         Bundle args = new Bundle();
         args.putBoolean(SHOW_INFO, showInfo);
-        args.putString(FEED_TAG, feed);
         args.putInt(INDEX, index);
+        args.putSerializable(NAVIGATION, navigation);
         fragment.setArguments(args);
         return fragment;
     }
@@ -78,23 +82,35 @@ public class PostFragment extends BaseFragment implements PostView {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_post, container, false);
         ButterKnife.bind(this, view);
 
-        Bundle arguments = getArguments();
+        final Bundle arguments = getArguments();
         if (arguments != null) {
             showInfo = arguments.getBoolean(SHOW_INFO);
-            String feed = arguments.getString(FEED_TAG);
             int index = arguments.getInt(INDEX);
+            navigation = (Navigation) arguments.getSerializable(NAVIGATION);
 
             postPresenter.takeView(this);
-            postPresenter.load(feed, index);
+            postPresenter.load(index);
         } else {
             throw new IllegalArgumentException("Fragment arguments are null");
         }
+
+        mImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                postPresenter.onViewerClicked(navigation);
+            }
+        });
 
         return view;
     }
@@ -114,7 +130,9 @@ public class PostFragment extends BaseFragment implements PostView {
 
     @Override
     public void toDetail(Post post, int index) {
-
+        Intent intent = new Intent(getActivity(), PostDetailActivity.class);
+        intent.putExtra(INDEX, postPresenter.getIndex());
+        getActivity().startActivityForResult(intent, TO_DETAIL_GALLERY_RESULT_CODE);
     }
 
     @Override
