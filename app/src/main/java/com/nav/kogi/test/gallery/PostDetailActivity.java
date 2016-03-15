@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import com.nav.kogi.test.BaseActivity;
 import com.nav.kogi.test.R;
+import com.nav.kogi.test.shared.api.ApiError;
 import com.nav.kogi.test.shared.models.Caption;
 import com.nav.kogi.test.shared.models.Post;
 
@@ -95,6 +96,11 @@ public class PostDetailActivity extends BaseActivity implements GalleryView {
     @Override
     public void setSelectedPost(int position) {
         updateCaption(position);
+    }
+
+    @Override
+    public void showError(ApiError generic) {
+        // TODO
     }
 
     @Override

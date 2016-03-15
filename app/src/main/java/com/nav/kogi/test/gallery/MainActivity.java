@@ -3,6 +3,7 @@ package com.nav.kogi.test.gallery;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.nav.kogi.test.BaseActivity;
 import com.nav.kogi.test.R;
+import com.nav.kogi.test.shared.api.ApiError;
 import com.nav.kogi.test.shared.models.Post;
 import com.nav.kogi.test.shared.util.AndroidUtil;
 
@@ -158,6 +160,17 @@ public class MainActivity extends BaseActivity implements GalleryView {
     public void setSelectedPost(int position) {
         mViewerPager.setCurrentItem(position, false);
         mGallery.scrollToPosition(position);
+    }
+
+    @Override
+    public void showError(ApiError error) {
+        int errorRes = R.string.error_generic;
+        switch (error) {
+            case CONNECTION:
+                errorRes = R.string.error_connection;
+                break;
+        }
+        Snackbar.make(findViewById(android.R.id.content), errorRes, Snackbar.LENGTH_LONG).show();
     }
 
     private class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostItemViewHolder> {

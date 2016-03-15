@@ -2,11 +2,13 @@ package com.nav.kogi.test.gallery;
 
 import com.nav.kogi.test.shared.annotation.Activities;
 import com.nav.kogi.test.shared.api.Api;
+import com.nav.kogi.test.shared.api.ApiError;
 import com.nav.kogi.test.shared.api.PostsResponse;
 import com.nav.kogi.test.shared.cache.Cache;
 import com.nav.kogi.test.shared.models.Post;
 import com.nav.kogi.test.shared.presenter.Presenter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +62,10 @@ public class GalleryPresenter implements Presenter<GalleryView> {
                     @Override
                     public void onError(Throwable e) {
                         loadCachedPopularPosts();
-                        // notify gallery view of network error.
+                        if (e instanceof IOException)
+                            galleryView.showError(ApiError.CONNECTION);
+                        else
+                            galleryView.showError(ApiError.GENERIC);
                     }
 
                     @Override
