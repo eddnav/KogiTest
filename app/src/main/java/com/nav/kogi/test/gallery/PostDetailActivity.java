@@ -3,10 +3,14 @@ package com.nav.kogi.test.gallery;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.nav.kogi.test.BaseActivity;
 import com.nav.kogi.test.R;
 import com.nav.kogi.test.shared.models.Caption;
+import com.nav.kogi.test.shared.models.Post;
 
 import javax.inject.Inject;
 
@@ -68,6 +72,22 @@ public class PostDetailActivity extends BaseActivity implements GalleryView {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_post_detail, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.share) {
+            shareImageLink(galleryPresenter.getSelectedPost().getImages().get(Post.ImageResolution.STANDARD).getUrl());
+            return true;
+        } else
+            return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void refresh() {
         mViewerPager.getAdapter().notifyDataSetChanged();
     }
@@ -87,11 +107,19 @@ public class PostDetailActivity extends BaseActivity implements GalleryView {
 
     @SuppressWarnings("ConstantConditions")
     public void updateCaption(int position) {
-        Caption caption = galleryPresenter.getPosts().get(position).getCaption();
+        Caption caption = galleryPresenter.getPostAt(position).getCaption();
         if (caption != null)
             getSupportActionBar().setTitle(caption.getText());
         else
             getSupportActionBar().setTitle(getString(R.string.app_name));
+    }
+
+    public void shareImageLink(String url) {
+        Intent share = new Intent(android.content.Intent.ACTION_SEND);
+        share.setType("text/plain");
+        share.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.check_out_this_image));
+        share.putExtra(Intent.EXTRA_TEXT, getString(R.string.check_out_this_image_url, url));
+        startActivity(Intent.createChooser(share, getString(R.string.share_to)));
     }
 
 }

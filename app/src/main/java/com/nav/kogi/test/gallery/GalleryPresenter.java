@@ -96,6 +96,14 @@ public class GalleryPresenter implements Presenter<GalleryView> {
             return false;
     }
 
+    public Post getSelectedPost() {
+        return getPosts().get(selectedIndex);
+    }
+
+    public Post getPostAt(int position) {
+        return getPosts().get(position);
+    }
+
     public List<Post> getPosts() {
         return posts;
     }

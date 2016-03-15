@@ -4,12 +4,18 @@
 
     <!-- Menu Action -->
     <string name="action_refresh">Refresh</string>
+    <string name="action_share">Share</string>
 
     <!-- Post Detail -->
     <string name="info_publish_date">Publish Date: %s</string>
     <string name="info_author">Author: %s</string>
     <string name="info_tag">Tag: %s</string>
-    <string name="title_activity_post_detail">PostDetail</string>
+
+    <!-- Share -->
+    <string name="share_to">Share to</string>
+    <string name="link">Link: %s</string>
+    <string name="check_out_this_image">Check out this image</string>
+    <string name="check_out_this_image_url">Check out this image: %s</string>
 
 
 </resources>
