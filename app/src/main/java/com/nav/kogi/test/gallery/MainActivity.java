@@ -9,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -105,6 +107,23 @@ public class MainActivity extends BaseActivity implements GalleryView {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.refresh) {
+            mRefreshLayout.setRefreshing(true);
+            galleryPresenter.fetchPopular();
+            return true;
+        } else
+            return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(SELECTED_INDEX, galleryPresenter.getSelectedIndex());
@@ -163,7 +182,7 @@ public class MainActivity extends BaseActivity implements GalleryView {
 
         public void select(int position) {
             int selectedIndex = presenter.getSelectedIndex();
-            if(position != selectedIndex) {
+            if (position != selectedIndex) {
                 notifyItemChanged(selectedIndex);
                 presenter.selectPost(position);
                 notifyItemChanged(presenter.getSelectedIndex());

@@ -37,7 +37,6 @@
         android:layout_height="match_parent"
         android:layout_below="@id/info"
         android:layout_centerInParent="true"
-        android:background="@color/viewer_background"
         android:scaleType="fitCenter"
         tools:ignore="ContentDescription"/>
 

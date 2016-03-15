@@ -3,6 +3,7 @@
     <!-- General -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="progress_bar_size">50dp</dimen>
 
     <!-- Post Item -->
     <dimen name="post_item_caption_padding">12dp</dimen>

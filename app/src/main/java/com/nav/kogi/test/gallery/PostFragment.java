@@ -108,7 +108,6 @@ public class PostFragment extends BaseFragment implements PostView {
         }
         Glide.with(getContext())
                 .load(post.getImages().get(Post.ImageResolution.STANDARD).getUrl())
-                .placeholder(R.drawable.placeholder) // TODO create better place holders, one for the top viewer and one for the cells.
                 .crossFade()
                 .into(mImage);
     }
