@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Prueba Kogi</string>
+    <string name="action_refresh">Refrescar</string>
+    <string name="action_share">Compartir</string>
+    <string name="check_out_this_image">Miren esta imagen</string>
+    <string name="check_out_this_image_url">Miren esta imagen: %s</string>
+    <string name="error_connection">Parece que hay un problema con la conexión de Internet</string>
+    <string name="error_generic">Un error desconocido ha ocurrido</string>
+    <string name="info_author">Autor: %s</string>
+    <string name="info_publish_date">Fecha de publicación: %s</string>
+    <string name="info_tag">Tag: %s</string>
+    <string name="link">Link: %s</string>
+    <string name="share_to">Compartir a</string>
+    <string name="title_activity_user_profile">Perfil de Usuario</string>
+</resources>

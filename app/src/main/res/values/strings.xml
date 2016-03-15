@@ -16,9 +16,9 @@
     <string name="link">Link: %s</string>
     <string name="check_out_this_image">Check out this image</string>
     <string name="check_out_this_image_url">Check out this image: %s</string>
-    <string name="error_connection">There seems to be a problem connecting to the internet</string>
+    <string name="error_connection">There seems to be a problem with the Internet connection</string>
     <string name="error_generic">An unknown error has occurred</string>
-    <string name="title_activity_user_profile">UserProfileActivity</string>
+    <string name="title_activity_user_profile">User Profile</string>
 
 
 </resources>
