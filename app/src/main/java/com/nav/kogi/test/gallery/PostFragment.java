@@ -145,7 +145,7 @@ public class PostFragment extends BaseFragment implements PostView {
     public void setInfo(Post post) {
         long unixSeconds = post.getCreatedTime();
         Date date = new Date(unixSeconds * 1000L);
-        DateFormat format = SimpleDateFormat.getTimeInstance();
+        DateFormat format = SimpleDateFormat.getDateTimeInstance();
         String formattedDate = format.format(date);
         mTimestamp.setText(getString(R.string.info_publish_date, formattedDate));
         mAuthor.setText(getString(R.string.info_author, post.getUser().getUsername()));
